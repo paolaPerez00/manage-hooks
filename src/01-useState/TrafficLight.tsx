@@ -1,21 +1,21 @@
 import { useState } from "react";
 
-export const TrafficLight = () => {
+const color = {
+    red: 'bg-red-500 animate-pulse',
+    yellow: 'bg-yellow-500 animate-pulse',
+    green: 'bg-green-500 animate-pulse',
+}
+const [light, setLight] = useState<TrafficLightColor>('red');
 
-    const color = {
-        red: 'bg-red-500 animate-pulse',
-        yellow: 'bg-yellow-500 animate-pulse',
-        green: 'bg-green-500 animate-pulse',
-    }
-    const [light, setLight] = useState<TrafficLightColor>('red');
+type TrafficLightColor = 'red' | 'yellow' | 'green';
+
+export const TrafficLight = () => {
 
     const handleColorChange = (color: TrafficLightColor) => {
         setLight((prev) => {
             return color;
         });
     }
-
-    type TrafficLightColor = 'red' | 'yellow' | 'green';
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 flex items-center justify-center p-4">
