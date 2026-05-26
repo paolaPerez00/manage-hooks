@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 
 import { Plus, Trash2, Check } from 'lucide-react';
 
@@ -6,39 +6,34 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getTaskInitialReduce, taskReducer } from './reducer/tasksReducer';
 
-interface Todo {
-    id: number;
-    text: string;
-    completed: boolean;
-}
 
 export const TasksApp = () => {
-    const [todos, setTodos] = useState<Todo[]>([]);
+    const [state, dispatch] = useReducer(taskReducer, getTaskInitialReduce());
     const [inputValue, setInputValue] = useState('');
 
     const addTodo = () => {
-        console.log('Agregar tarea', inputValue);
-
+        if (inputValue.length === 0) return;
+        dispatch({ type: 'ADD_TODO', payload: inputValue })
+        setInputValue('');
     };
 
     const toggleTodo = (id: number) => {
-        console.log('Cambiar de true a false', id);
-
+        dispatch({ type: 'TOOGLE_TODO', payload: id })
     };
 
     const deleteTodo = (id: number) => {
-        console.log('Eliminar tarea', id);
-
+        dispatch({ type: 'DELETE_TODO', payload: id })
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
-        console.log('Presiono enter');
-
+        if (e.key === 'Enter') {
+            addTodo();
+        }
     };
 
-    const completedCount = todos.filter((todo) => todo.completed).length;
-    const totalCount = todos.length;
+    const { todos, completedNumber: completedCount, length: totalCount } = state;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
@@ -119,8 +114,8 @@ export const TasksApp = () => {
                                     <div
                                         key={todo.id}
                                         className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 ${todo.completed
-                                                ? 'bg-slate-50 border-slate-200'
-                                                : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
+                                            ? 'bg-slate-50 border-slate-200'
+                                            : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
                                             }`}
                                     >
                                         <Checkbox
@@ -130,8 +125,8 @@ export const TasksApp = () => {
                                         />
                                         <span
                                             className={`flex-1 transition-all duration-200 ${todo.completed
-                                                    ? 'text-slate-500 line-through'
-                                                    : 'text-slate-800'
+                                                ? 'text-slate-500 line-through'
+                                                : 'text-slate-800'
                                                 }`}
                                         >
                                             {todo.text}
