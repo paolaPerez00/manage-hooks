@@ -18,12 +18,19 @@ export type taskAction =
 
 
 export const getTaskInitialReduce = (): TaskState => {
-    return {
-        todos: [],
-        completedNumber: 0,
-        pending: 0,
-        length: 0
+
+    const localStorageState = localStorage.getItem('task-state');
+    if (!localStorageState) {
+        return {
+            todos: [],
+            completedNumber: 0,
+            pending: 0,
+            length: 0
+        }
     }
+
+    return JSON.parse(localStorageState);
+
 }
 
 export const taskReducer = (state: TaskState, action: taskAction): TaskState => {
